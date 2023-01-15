@@ -126,11 +126,11 @@ namespace VRCP.Core.HttpTraffic
                 {
                     // Parse the payload data as an HTTP response
                     response = Encoding.UTF8.GetString(transportPacket.PayloadData);
-                    Logger<ProductionLoggerConfig>.LogInformation(transportPacket.ToString(StringOutputType.Normal));
+                    Logger<ProductionLoggerConfig>.LogInformation(response);
                 }
                 catch (Exception ex)
                 {
-                    Logger<ProductionLoggerConfig>.LogCritical(ex.ToString());
+                    Logger<ProductionLoggerConfig>.LogCritical($"Failed to read packet: 0x{ex.HResult.ToString("x").PadLeft(8, '0')}");
                 }
             }
 
