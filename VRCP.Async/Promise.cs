@@ -220,6 +220,11 @@ namespace VRCP
         /// Reject the promise with an exception.
         /// </summary>
         void Reject(Exception ex);
+
+        /// <summary>
+        /// Reject the promise with an exception.
+        /// </summary>
+        void Reject(string error);
     }
 
     /// <summary>
@@ -472,6 +477,34 @@ namespace VRCP
                 );
             }
 
+            rejectionException = ex;
+            CurState = PromiseState.Rejected;
+
+            if (Promise.EnablePromiseTracking)
+            {
+                Promise.PendingPromises.Remove(this);
+            }
+
+            InvokeRejectHandlers(ex);
+        }
+
+        /// <summary>
+        /// Reject the promise with an exception.
+        /// </summary>
+        public void Reject(string error)
+        {
+            //            Argument.NotNull(() => ex);
+
+            if (CurState != PromiseState.Pending)
+            {
+                throw new PromiseStateException(
+                    "Attempt to reject a promise that is already in state: " + CurState
+                    + ", a promise can only be rejected when it is still in state: "
+                    + PromiseState.Pending
+                );
+            }
+
+            var ex = new Exception(error);
             rejectionException = ex;
             CurState = PromiseState.Rejected;
 

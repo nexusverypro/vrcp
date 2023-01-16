@@ -28,6 +28,8 @@ SOFTWARE.
 
 using System;
 using System.Net.NetworkInformation;
+using VRCP.Core;
+using VRCP.Core.Driver;
 using VRCP.Core.HttpTraffic;
 using VRCP.Log;
 
@@ -53,6 +55,15 @@ namespace VRCP
 
         public static void Main()
         {
+            Cache.RescaleCacheCapacity(10);
+            Cache.Add(0x0DE1AF2, Environment.OSVersion.VersionString);
+            Cache.Add(0x0DE1AF3, Environment.OSVersion.ServicePack);
+            Cache.Add(0x0DE1AF4, Environment.OSVersion.Version);
+            Cache.Add(0x0DE1AF5, Environment.ProcessId);
+            Cache.Add(0x0DE1AF6, Environment.UserDomainName);
+            Cache.Add(0x0DE1AF7, Environment.UserName);
+            Cache.Add(0x0DE1AF8, Environment.MachineName);
+
             AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
             var networkAdapters = GetAllNetworkAdapters();
             var currentNa = GetCurrentNetworkAdapter();
@@ -68,15 +79,23 @@ namespace VRCP
             Logger<ProductionLoggerConfig>.LogInformation("Initializing VRCP proxy drivers");
             try
             {
-                HttpPcapDriver.Initialize("host api.vrchat.cloud and tcp", currentNa.Id)
-                    .Then(() => Logger<ProductionLoggerConfig>.LogInformation("Successfully initialized HttpPcapDriver"))
+                var c = (PacketPcapDriver)IDriver.Create<PacketPcapDriver>();
+                c.Connect(currentNa.Id)
+                    .Then(res =>
+                    {
+                        c.BeginReceivePackets()
+                            .Then(rex =>
+                            {
+                                Logger<ProductionLoggerConfig>.LogInformation("Successfully initialized HttpPcapDriver");
+                            })
+                            .Catch(ex => Logger<ProductionLoggerConfig>.LogCritical("Failed to initialize driver.\n\tStack message - " + ex.Message + "; at " + ex.TargetSite.Name));
+                    })
                     .Catch(ex => Logger<ProductionLoggerConfig>.LogCritical("Failed to initialize driver.\n\tStack message - " + ex.Message + "; at " + ex.TargetSite.Name));
-
 
             }
             catch (Exception ex)
             {
-                Logger<ProductionLoggerConfig>.LogCritical(ex.Message);
+                Logger<ProductionLoggerConfig>.LogCritical(ex.ToString());
                 Logger<ProductionLoggerConfig>.LogCritical("Press any key to exit...");
                 Console.ReadKey();
             }
@@ -84,7 +103,6 @@ namespace VRCP
 
         private static void CurrentDomain_ProcessExit(object? sender, EventArgs e)
         {
-            HttpPcapDriver.Close();
         }
     }
 }

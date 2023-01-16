@@ -30,14 +30,13 @@ namespace VRCP.Core
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+    using VRCP.Log;
 
     public static class Cache
     {
         public static T Add<T>(int identifier, T value)
         {
+            Cache.EnsureCapacity();
             if (!_cacheList.ContainsKey(identifier))
             {
                 _cacheList.Add(identifier, new CacheItem(value));
@@ -48,12 +47,14 @@ namespace VRCP.Core
 
         public static T Get<T>(int identifier)
         {
+            Cache.EnsureCapacity();
             if (_cacheList.ContainsKey(identifier)) return (T)_cacheList[identifier].Item;
             return default(T);
         }
 
         public static T GetOrAdd<T>(int identifier, T defaultValue)
         {
+            Cache.EnsureCapacity();
             if (!_cacheList.ContainsKey(identifier))
             {
                 _cacheList.Add(identifier, new CacheItem(defaultValue));
@@ -62,6 +63,54 @@ namespace VRCP.Core
             else return (T)_cacheList[identifier].Item;
         }
 
+        public static void RescaleCacheCapacity(int to)
+        {
+            int prev = _capacity; 
+            int now = _capacity = _cacheList.EnsureCapacity(to);
+
+            Logger<ProductionLoggerConfig>.LogWarning($"Ensuring cache capacity change from {prev} to {to}");
+
+            if (now == prev) // it didnt change the capacity
+            {
+                ErrorHelper.ReportError(ErrorHelper.CAPACITY_CHANGE);
+            }
+            else return;
+        }
+
+        private static void EnsureCapacity()
+        {
+            int cur = _capacity;
+            int now = _cacheList.Count;
+
+            for (int i = 0; i < rescaleFactors.Count; i++)
+            {
+                // if 'now' is greater than expected, and less than next expected by 10,
+                // rescale
+                if (i > 0 && now > rescaleFactors[i] && now < rescaleFactors[i + 1] - 10 && !(now > rescaleFactors[i + 1]))
+                {
+                    Cache.RescaleCacheCapacity(rescaleFactors[i + 1]);
+                }
+            }
+        }
+
+        private static List<int> rescaleFactors = new List<int>()
+        {
+            0,
+            10,
+            28,
+            48,
+            68,
+            88,
+            128,
+            248,
+            488,
+            688,
+            788,
+            988,
+            1028
+        };
+
+        private static int _capacity;
         private static Dictionary<int, CacheItem> _cacheList = new Dictionary<int, CacheItem>();
     }
 

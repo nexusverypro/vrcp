@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="SharpPcap" Version="6.2.5" />
+    <PackageReference Include="System.Security.Cryptography.OpenSsl" Version="5.0.0" />
     <PackageReference Include="Whois" Version="3.0.1" />
   </ItemGroup>
 

@@ -49,6 +49,9 @@ namespace VRCP.Core.HttpTraffic
 
     using System.Net.Sockets;
     using Tokens.Extensions;
+    using System.Net.Security;
+    using System.Xml.Linq;
+    using System.Diagnostics.Contracts;
 
     public class HttpPcapDriver
     {
@@ -117,11 +120,23 @@ namespace VRCP.Core.HttpTraffic
             var transportPacket = packet.Extract<TcpPacket>();
             //var response = LookupClient.Lookup(ipPacket.SourceAddress.ToString());
             //Logger<ProductionLoggerConfig>.LogInformation(response.DomainName.Value);
+            try
+            {
+                if (IsConnectPacket(packet))
+                    Logger<ProductionLoggerConfig>.LogInformation("Connect packet received");
+                else if (IsConnectPacket(transportPacket))
+                    Logger<ProductionLoggerConfig>.LogInformation("Connect TCP packet received");
+                else if (IsConnectPacket(ipPacket))
+                    Logger<ProductionLoggerConfig>.LogInformation("Connect IP packet received");
+            }
+            catch (Exception ex)
+            {
+                Logger<ProductionLoggerConfig>.LogCritical($"Failed to read potential CONNECT packet: 0x{ex.HResult.ToString("x").PadLeft(8, '0')}, {ex.ToString()}");
+            }
             bool isResponse = transportPacket != null;
             string response = "";
             if (isResponse && transportPacket.DestinationPort == 443 || transportPacket.DestinationPort == 80)
             {
-                Logger<ProductionLoggerConfig>.LogTrace("Received response packet");
                 try
                 {
                     // Parse the payload data as an HTTP response
@@ -134,6 +149,33 @@ namespace VRCP.Core.HttpTraffic
                 }
             }
 
+        }
+
+        /*
+         * Payloads usually start with their type, for example a GET request would be:
+         * 
+         * GET HTTP/1.0 OK
+         */
+        public static bool IsConnectPacket(Packet packet)
+        {
+            if (packet.PayloadData == null) return false;
+
+            using (var stream = new MemoryStream(packet.PayloadData))
+            using (var reader = new StreamReader(stream))
+            {
+                // Read the payload data as a string
+                var payload = reader.ReadToEnd();
+
+                // Check if the payload data starts with "CONNECT"
+                if (payload.StartsWith("CONNECT"))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
         private static void Device_OnCaptureStopped(object sender, CaptureStoppedEventStatus status)
