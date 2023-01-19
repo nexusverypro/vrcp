@@ -97,7 +97,6 @@ namespace VRCP.Core.Driver
             }
             this.Internal_StartConnect(p, current);
         }
-
         private void Internal_StartConnect(Promise<DriverResult> p, ILiveDevice device)
         {
             if (device == null)
@@ -121,7 +120,6 @@ namespace VRCP.Core.Driver
                 p.Reject(ex);
             }
         }
-
         private void Internal_SendPacket(Promise<DriverResult> p, Packet packet)
         {
             try
@@ -135,7 +133,6 @@ namespace VRCP.Core.Driver
                 p.Reject(ex);
             }
         }
-
         private void Internal_ChangeReceiveState(Promise<DriverResult> p, bool startReceiving)
         {
             try
@@ -150,7 +147,6 @@ namespace VRCP.Core.Driver
                 p.Reject(ex);
             }
         }
-
         private void Internal_OnPacketArrival(object? sender, PacketCapture e)
         {
             try
@@ -186,6 +182,10 @@ namespace VRCP.Core.Driver
             {
                 Logger<ProductionLoggerConfig>.LogCritical("Error on Packet arrival: " + ex.Message);
             }
+        }
+        private string Internal_GetDeviceId()
+        {
+            return $"0x{(((_currentDevice.GetHashCode() * 100) >> _backgroundWorker.GetHashCode()) * 918).ToString("x")}";
         }
 
         private ILiveDevice _currentDevice;
