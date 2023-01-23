@@ -32,6 +32,27 @@ namespace VRCP.Log
     using System.Text.RegularExpressions;
     using VRCP.Core;
 
+    public static class Logger
+    {
+        public static IPromise Trace(string message, params object[] parameters)
+            => Logger<ProductionLoggerConfig>.LogTrace(message, parameters);
+
+        public static IPromise Debug(string message, params object[] parameters)
+            => Logger<ProductionLoggerConfig>.LogDebug(message, parameters);
+
+        public static IPromise Information(string message, params object[] parameters)
+            => Logger<ProductionLoggerConfig>.LogInformation(message, parameters);
+
+        public static IPromise Warning(string message, params object[] parameters)
+            => Logger<ProductionLoggerConfig>.LogWarning(message, parameters);
+
+        public static IPromise Error(string message, params object[] parameters)
+            => Logger<ProductionLoggerConfig>.LogError(message, parameters);
+
+        public static IPromise Critical(string message, params object[] parameters)
+            => Logger<ProductionLoggerConfig>.LogCritical(message, parameters);
+    }
+
     public static class Logger<TConfig> where TConfig : ILoggerConfig, new()
     {
         // i am too good at cs dev
@@ -52,7 +73,7 @@ namespace VRCP.Log
 
                     (new Thread(() =>
                     {
-                        bool isFormat = IsFormatStr(item.message);
+                        bool isFormat = item.param.Any();
                         string finalMessage = isFormat ? string.Format(item.message, item.param) : item.message;
 
                         var logTypeConfig = LoggerConfiguration.LogTypes[item.type];

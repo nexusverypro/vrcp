@@ -26,16 +26,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using PacketDotNet;
-using SharpPcap;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace VRCP.Core.Driver
 {
+    using PacketDotNet;
+    using SharpPcap;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    using VRCP.Network;
+
     /// <summary>
     /// Defines a WinPcap driver.
     /// </summary>

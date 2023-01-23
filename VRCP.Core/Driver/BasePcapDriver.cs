@@ -1,6 +1,4 @@
-﻿using PacketDotNet;
-using SharpPcap;
-using System;
+﻿
 // ---------------------------------- NOTICE ---------------------------------- //
 // VRCP is made with the MIT License. Notices will be in their respective file. //
 // ---------------------------------------------------------------------------- //
@@ -29,17 +27,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace VRCP.Core.Driver
 {
+    using PacketDotNet;
+    using SharpPcap;
+    using System;
+
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    using VRCP.Network;
+
     /// <summary>
     /// Specifies the base Pcap driver that all WinPcap based drivers can be derived from.
     /// </summary>
-    public abstract class BasePcapDriver : IPcapDriver
+    public abstract class BasePcapDriver : BaseDriver<PacketPcapDriver>, IPcapDriver
     {
         public abstract bool IsReceivingPackets { get; }
 

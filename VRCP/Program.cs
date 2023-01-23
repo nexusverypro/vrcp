@@ -1,4 +1,14 @@
-﻿// ---------------------------------- NOTICE ---------------------------------- //
+﻿#define WIN_DIST
+#define DEBUG
+#define IS_ANY_CPU
+
+#if NET6_0
+    #define IS_NET6_0
+#elif (NETCOREAPP3_1_OR_GREATER && !NET5_0_OR_GREATER)
+    #define IS_NETCAPP
+#endif
+
+// ---------------------------------- NOTICE ---------------------------------- //
 // VRCP is made with the MIT License. Notices will be in their respective file. //
 // ---------------------------------------------------------------------------- //
 
@@ -28,26 +38,33 @@ SOFTWARE.
 
 using System;
 using System.Net.NetworkInformation;
+using System.Text.Json.Serialization;
+
 using VRCP.Core;
 using VRCP.Core.Driver;
 using VRCP.Core.HttpTraffic;
+using VRCP.Core.Intro;
+using VRCP.Core.Utils;
+using VRCP.Network;
 using VRCP.Log;
+using VRCP.Application;
+using System.Threading;
 
 namespace VRCP
 {
     public static class Program
     {
-        private static NetworkInterface[] GetAllNetworkAdapters()
+        private static VRCPNetAdapter[] GetAllNetworkAdapters()
         {
-            NetworkInterface[] networks = NetworkInterface.GetAllNetworkInterfaces();
+            VRCPNetAdapter[] networks = NetworkAPI.GetAdapters();
             return networks;
         }
 
-        private static NetworkInterface GetCurrentNetworkAdapter()
+        private static VRCPNetAdapter GetCurrentNetworkAdapter()
         {
-            NetworkInterface[] networks = GetAllNetworkAdapters();
-            var activeAdapter = networks.First(x => x.NetworkInterfaceType != NetworkInterfaceType.Loopback
-                                && x.NetworkInterfaceType != NetworkInterfaceType.Tunnel
+            VRCPNetAdapter[] networks = GetAllNetworkAdapters();
+            var activeAdapter = networks.First(x => x.NetType != NetworkInterfaceType.Loopback
+                                && x.NetType != NetworkInterfaceType.Tunnel
                                 && x.OperationalStatus == OperationalStatus.Up
                                 && x.Name.StartsWith("vEthernet") == false);
             return activeAdapter;
@@ -55,7 +72,38 @@ namespace VRCP
 
         public static void Main()
         {
+            var appId = ApplicationHandler.GetGuid();
+            Logger.Warning("Checking application session: " + appId);
+
+            // check application instance
+            ApplicationHandler.PreventMultipleInstance()
+                .Then(() =>
+                {
+                    Logger.Trace("Application session verified");
+
+                    Thread.Sleep(100);
+                    Console.Clear();
+
+                    IntroHelper.PlayIntro()
+                        .Then(Program.AfterLogoResolve);
+                })
+                .Catch((ex) =>
+                {
+                    Logger.Error("Failed to check application session: A session of VRCP already exists.");
+                });
+
+            // in case the process lock fails
+            Console.ReadKey();
+            while (true) ;
+        }
+
+        private static void AfterLogoResolve()
+        {
+            Console.Clear();
+
             Cache.RescaleCacheCapacity(10);
+
+            // store crucial os info
             Cache.Add(0x0DE1AF2, Environment.OSVersion.VersionString);
             Cache.Add(0x0DE1AF3, Environment.OSVersion.ServicePack);
             Cache.Add(0x0DE1AF4, Environment.OSVersion.Version);
@@ -72,6 +120,8 @@ namespace VRCP
             for (int i = 0; i != networkAdapters.Count(); ++i)
             {
                 var device = networkAdapters[i];
+                var netAdapt = device.AdapterId;
+                Cache.Add(((Guid)netAdapt).GetHashCode(), device);
                 Logger<ProductionLoggerConfig>.LogDebug((i + 1) + ". " + device.Name + (string.IsNullOrEmpty(device.Description) ? ": (No description available)" : ": " + device.Description));
             }
             Logger<ProductionLoggerConfig>.LogDebug("=================================== networks ===================================")
@@ -79,8 +129,9 @@ namespace VRCP
             Logger<ProductionLoggerConfig>.LogInformation("Initializing VRCP proxy drivers");
             try
             {
-                var c = (PacketPcapDriver)IDriver.Create<PacketPcapDriver>();
-                c.Connect(currentNa.Id)
+
+                var c = PacketPcapDriver.Create();
+                c.Connect(currentNa.AdapterId)
                     .Then(res =>
                     {
                         c.BeginReceivePackets()
@@ -92,6 +143,17 @@ namespace VRCP
                     })
                     .Catch(ex => Logger<ProductionLoggerConfig>.LogCritical("Failed to initialize driver.\n\tStack message - " + ex.Message + "; at " + ex.TargetSite.Name));
 
+            }
+            catch (DllNotFoundException dllEx)
+            {
+                string missingDll = dllEx.Message.Split('\'')[1].Split("\'")[0];
+                Logger<ProductionLoggerConfig>.LogCritical($"Missing '{missingDll}.dll'. Cannot proceed with execution chain.");
+                if (missingDll == "wpcap")
+                {
+                    Logger<ProductionLoggerConfig>.LogCritical($"Looks like you're missing the WPCAP dlls. To download them, go to https://www.winpcap.org/install.");
+                }
+                Logger<ProductionLoggerConfig>.LogCritical("Press any key to exit...");
+                Console.ReadKey();
             }
             catch (Exception ex)
             {

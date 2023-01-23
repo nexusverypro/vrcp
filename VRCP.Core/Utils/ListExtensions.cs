@@ -26,24 +26,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace VRCP.Core
+namespace VRCP.Core.Utils
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Text;
-    using System.Threading.Tasks;
-    using VRCP.Log;
 
-    public static class ErrorHelper
+    public static class ListExtensions
     {
-        public static void ReportError(int error)
+        public static List<string> ToHexCodes(this List<byte> list)
         {
-            Logger<ProductionLoggerConfig>.LogError($"Error at 0x{error.ToString("x")}! {ErrorHelper.DEFAULT}");
+            return (from x in list
+                    select "0x" + x.ToString("x")).ToList();
         }
-        public static readonly int CAPACITY_CHANGE  = 917836812;
-        public static readonly int PCAP_ERROR       = 816231278;
-
-        public static readonly string DEFAULT       = "Is something configured incorrectly?";
     }
 }

@@ -26,24 +26,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace VRCP.Core
+namespace VRCP.Network
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using VRCP.Log;
 
-    public static class ErrorHelper
+    /// <summary>
+    /// Specifies a Network Adapter Id. Works in GUIDS.
+    /// </summary>
+    public struct NetworkAdapterId
     {
-        public static void ReportError(int error)
+        /// <summary>
+        /// Creates a <see cref="NetworkAdapterId"/>
+        /// </summary>
+        /// <param name="id">The specified Network Adapter Id.</param>
+        public NetworkAdapterId(string id)
         {
-            Logger<ProductionLoggerConfig>.LogError($"Error at 0x{error.ToString("x")}! {ErrorHelper.DEFAULT}");
+            string reparsed = id.Replace("{", "")
+                                .Replace("}", "");
+            _id = Guid.Parse(reparsed);
         }
-        public static readonly int CAPACITY_CHANGE  = 917836812;
-        public static readonly int PCAP_ERROR       = 816231278;
 
-        public static readonly string DEFAULT       = "Is something configured incorrectly?";
+        /// <summary>
+        /// Creates a <see cref="NetworkAdapterId"/>
+        /// </summary>
+        /// <param name="id">The specified Network Adapter Id.</param>
+        public NetworkAdapterId(Guid id) => _id = id;
+
+        public static implicit operator NetworkAdapterId(string id) => new NetworkAdapterId(id);
+        public static implicit operator NetworkAdapterId(Guid id) => new NetworkAdapterId(id);
+
+        public static implicit operator string(NetworkAdapterId id) => id._id.ToString().ToUpper();
+        public static implicit operator Guid(NetworkAdapterId id) => id._id;
+
+        private Guid _id;
     }
 }

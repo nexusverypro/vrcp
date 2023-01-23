@@ -86,7 +86,7 @@ namespace VRCP.Core
             {
                 // if 'now' is greater than expected, and less than next expected by 10,
                 // rescale
-                if (i > 0 && now > rescaleFactors[i] && now < rescaleFactors[i + 1] - 10 && !(now > rescaleFactors[i + 1]))
+                if (i > 0 && now > rescaleFactors[i] && now >= rescaleFactors[i + 1])
                 {
                     Cache.RescaleCacheCapacity(rescaleFactors[i + 1]);
                 }

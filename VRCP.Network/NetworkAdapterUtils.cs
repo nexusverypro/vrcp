@@ -26,24 +26,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace VRCP.Core
+namespace VRCP.Network
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.NetworkInformation;
     using System.Text;
     using System.Threading.Tasks;
-    using VRCP.Log;
 
-    public static class ErrorHelper
+    public static class NetworkAdapterUtils
     {
-        public static void ReportError(int error)
+        public static string ToName(this NetworkInterface network)
         {
-            Logger<ProductionLoggerConfig>.LogError($"Error at 0x{error.ToString("x")}! {ErrorHelper.DEFAULT}");
+            var naId = new NetworkAdapterId(network.Id);
+            return $"{network.Name} [{(string)naId}]";
         }
-        public static readonly int CAPACITY_CHANGE  = 917836812;
-        public static readonly int PCAP_ERROR       = 816231278;
-
-        public static readonly string DEFAULT       = "Is something configured incorrectly?";
     }
 }

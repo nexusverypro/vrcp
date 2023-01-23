@@ -26,16 +26,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tokens.Logging;
-using VRCP.Log;
-
 namespace VRCP.Core.Utils
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using Tokens.Logging;
+    using VRCP.Log;
+
     public static class ActionUtils
     {
         public static void SafeInvoke(this Action act)

@@ -26,42 +26,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace VRCP.Core.Driver
 {
-    /// <summary>
-    /// Specifies a Network Adapter Id. Works in GUIDS.
-    /// </summary>
-    public struct NetworkAdapterId
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    public class BaseDriver<T> : IDriver where T : BaseDriver<T>, IDriver
     {
-        /// <summary>
-        /// Creates a <see cref="NetworkAdapterId"/>
-        /// </summary>
-        /// <param name="id">The specified Network Adapter Id.</param>
-        public NetworkAdapterId(string id)
+        public static T Create()
         {
-            string reparsed = id.Replace("{", "")
-                                .Replace("}", "");
-            _id = Guid.Parse(reparsed);
+            return (T)Activator.CreateInstance<T>();
         }
-
-        /// <summary>
-        /// Creates a <see cref="NetworkAdapterId"/>
-        /// </summary>
-        /// <param name="id">The specified Network Adapter Id.</param>
-        public NetworkAdapterId(Guid id) => _id = id;
-
-        public static implicit operator NetworkAdapterId(string id) => new NetworkAdapterId(id);
-        public static implicit operator NetworkAdapterId(Guid id) => new NetworkAdapterId(id);
-
-        public static implicit operator string(NetworkAdapterId id) => id._id.ToString().ToUpper();
-        public static implicit operator Guid(NetworkAdapterId id) => id._id;
-
-        private Guid _id;
     }
 }

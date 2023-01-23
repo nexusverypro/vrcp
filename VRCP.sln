@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VRCP.Async", "VRCP.Async\VR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VRCP.Core", "VRCP.Core\VRCP.Core.csproj", "{23A86D3C-0A9F-4114-A834-D739CD6806F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VRCP.Network", "VRCP.Network\VRCP.Network.csproj", "{E2389368-1819-49CD-81CC-CDB2924CA05F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{23A86D3C-0A9F-4114-A834-D739CD6806F2}.Release|x64.Build.0 = Release|Any CPU
 		{23A86D3C-0A9F-4114-A834-D739CD6806F2}.Release|x86.ActiveCfg = Release|Any CPU
 		{23A86D3C-0A9F-4114-A834-D739CD6806F2}.Release|x86.Build.0 = Release|Any CPU
+		{E2389368-1819-49CD-81CC-CDB2924CA05F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2389368-1819-49CD-81CC-CDB2924CA05F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2389368-1819-49CD-81CC-CDB2924CA05F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E2389368-1819-49CD-81CC-CDB2924CA05F}.Debug|x64.Build.0 = Debug|Any CPU
+		{E2389368-1819-49CD-81CC-CDB2924CA05F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E2389368-1819-49CD-81CC-CDB2924CA05F}.Debug|x86.Build.0 = Debug|Any CPU
+		{E2389368-1819-49CD-81CC-CDB2924CA05F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2389368-1819-49CD-81CC-CDB2924CA05F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2389368-1819-49CD-81CC-CDB2924CA05F}.Release|x64.ActiveCfg = Release|Any CPU
+		{E2389368-1819-49CD-81CC-CDB2924CA05F}.Release|x64.Build.0 = Release|Any CPU
+		{E2389368-1819-49CD-81CC-CDB2924CA05F}.Release|x86.ActiveCfg = Release|Any CPU
+		{E2389368-1819-49CD-81CC-CDB2924CA05F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
