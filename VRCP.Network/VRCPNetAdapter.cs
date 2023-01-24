@@ -30,9 +30,9 @@ namespace VRCP.Network
         public bool IsBeingUsed() => this._opStatus == OperationalStatus.Up;
 
         #region Statistics
-        public VRCP_IPv4Statistics GetCurrentIPv4Statistics()
+        public VRCP_IPStatistics GetCurrentIPStatistics()
         {
-            return new VRCP_IPv4Statistics(_interface.GetIPv4Statistics());
+            return new VRCP_IPStatistics(_interface.GetIPStatistics());
         }
         #endregion
 
@@ -72,9 +72,9 @@ namespace VRCP.Network
     /// <summary>
     /// Specifies statistics for a <see cref="NetworkInterface"/>.
     /// </summary>
-    public class VRCP_IPv4Statistics
+    public class VRCP_IPStatistics
     {
-        internal VRCP_IPv4Statistics(IPv4InterfaceStatistics statistics) => _stats = statistics;
+        internal VRCP_IPStatistics(IPInterfaceStatistics statistics) => _stats = statistics;
 
         public double SentInMegabytes => _stats.BytesSent / 0.000001;
         public double ReceivedInMegabytes => _stats.BytesReceived / 0.000001;
@@ -82,6 +82,6 @@ namespace VRCP.Network
         public int IncomingPacketsDropped => (int)_stats.IncomingPacketsDiscarded;
         public int OutgoingPacketsDropped => (int)_stats.OutgoingPacketsDiscarded;
 
-        private IPv4InterfaceStatistics _stats;
+        private IPInterfaceStatistics _stats;
     }
 }

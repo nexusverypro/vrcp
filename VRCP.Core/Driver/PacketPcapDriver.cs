@@ -56,7 +56,7 @@ namespace VRCP.Core.Driver
             {
                 if (res.Result == DriverResult.OK_RESULT)
                 {
-                    var cacheItem = Cache.Get<NetworkInterface>(((Guid)id).GetHashCode());
+                    var cacheItem = Cache.Get<VRCPNetAdapter>(((Guid)id).GetHashCode());
                     Logger<ProductionLoggerConfig>.LogWarning("Listening on " + cacheItem.ToName());
                 }
             });

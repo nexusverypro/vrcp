@@ -2,10 +2,12 @@
 #define DEBUG
 #define IS_ANY_CPU
 
+#define IS_APP
+
 #if NET6_0
-    #define IS_NET6_0
+#define IS_NET6_0
 #elif (NETCOREAPP3_1_OR_GREATER && !NET5_0_OR_GREATER)
-    #define IS_NETCAPP
+#define IS_NETCAPP
 #endif
 
 // ---------------------------------- NOTICE ---------------------------------- //
@@ -70,6 +72,7 @@ namespace VRCP
             return activeAdapter;
         }
 
+#if IS_APP
         public static void Main()
         {
             var appId = ApplicationHandler.GetGuid();
@@ -166,5 +169,6 @@ namespace VRCP
         private static void CurrentDomain_ProcessExit(object? sender, EventArgs e)
         {
         }
+#endif
     }
 }

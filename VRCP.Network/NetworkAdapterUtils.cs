@@ -37,10 +37,12 @@ namespace VRCP.Network
 
     public static class NetworkAdapterUtils
     {
-        public static string ToName(this NetworkInterface network)
+        /// <summary>
+        /// Turns a <see cref="VRCPNetAdapter"/> to a readable string.
+        /// </summary>
+        public static string ToName(this VRCPNetAdapter network)
         {
-            var naId = new NetworkAdapterId(network.Id);
-            return $"{network.Name} [{(string)naId}]";
+            return $"{network.Name} [{(string)network.AdapterId}]";
         }
     }
 }
