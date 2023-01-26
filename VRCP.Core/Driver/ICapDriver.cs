@@ -39,21 +39,15 @@ namespace VRCP.Core.Driver
     using VRCP.Network;
 
     /// <summary>
-    /// Defines a WinPcap driver.
+    /// Defines a (x)cap driver.
     /// </summary>
-    public interface IPcapDriver : IDriver
+    public interface ICapDriver : IDriver
     {
         /// <summary>
         /// Connects to the specified network.
         /// </summary>
         /// <param name="id">The selected NetworkAdapter id.</param>
         IPromise<DriverResult> Connect(NetworkAdapterId id);
-
-        /// <summary>
-        /// Forcefully sends a packet through a network.
-        /// </summary>
-        /// <param name="packet">The packet to send.</param>
-        IPromise<DriverResult> SendPacket(Packet packet);
 
         /// <summary>
         /// Tells the driver to start receiving packet events.
@@ -64,11 +58,6 @@ namespace VRCP.Core.Driver
         /// Tells the driver to stop receiving packet events.
         /// </summary>
         IPromise<DriverResult> EndReceivePackets();
-
-        /// <summary>
-        /// Invokes when a packet has been captured my WinPcap.
-        /// </summary>
-        event Action<RawCapture, Packet> OnPacketCaptured;
 
         /// <summary>
         /// Specifies if we are receiving packets.

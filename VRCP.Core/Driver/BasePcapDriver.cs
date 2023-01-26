@@ -43,7 +43,7 @@ namespace VRCP.Core.Driver
     /// <summary>
     /// Specifies the base Pcap driver that all WinPcap based drivers can be derived from.
     /// </summary>
-    public abstract class BasePcapDriver : BaseDriver<PacketPcapDriver>, IPcapDriver
+    public abstract class BasePcapDriver : BaseDriver<PacketPcapDriver>, ICapDriver
     {
         public abstract bool IsReceivingPackets { get; }
 

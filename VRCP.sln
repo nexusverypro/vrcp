@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VRCP.Async", "VRCP.Async\VR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VRCP.Core", "VRCP.Core\VRCP.Core.csproj", "{23A86D3C-0A9F-4114-A834-D739CD6806F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VRCP.Network", "VRCP.Network\VRCP.Network.csproj", "{E2389368-1819-49CD-81CC-CDB2924CA05F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VRCP.Network", "VRCP.Network\VRCP.Network.csproj", "{E2389368-1819-49CD-81CC-CDB2924CA05F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

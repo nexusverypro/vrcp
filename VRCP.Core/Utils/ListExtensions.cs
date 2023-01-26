@@ -41,5 +41,7 @@ namespace VRCP.Core.Utils
             return (from x in list
                     select "0x" + x.ToString("x")).ToList();
         }
+
+        public static void Resize<TItem>(this List<TItem> thisList, int to) => thisList.EnsureCapacity(to);
     }
 }

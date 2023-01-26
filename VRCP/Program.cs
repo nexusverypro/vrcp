@@ -115,9 +115,9 @@ namespace VRCP
             Cache.Add(0x0DE1AF7, Environment.UserName);
             Cache.Add(0x0DE1AF8, Environment.MachineName);
 
-            AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
-            var networkAdapters = GetAllNetworkAdapters();
-            var currentNa = GetCurrentNetworkAdapter();
+            AppDomain.CurrentDomain.ProcessExit += Program.CurrentDomain_ProcessExit;
+            var networkAdapters                  = Program.GetAllNetworkAdapters();
+            var currentNa                        = Program.GetCurrentNetworkAdapter();
 
             Logger<ProductionLoggerConfig>.LogDebug("=================================== networks ===================================");
             for (int i = 0; i != networkAdapters.Count(); ++i)
@@ -137,12 +137,21 @@ namespace VRCP
                 c.Connect(currentNa.AdapterId)
                     .Then(res =>
                     {
-                        c.BeginReceivePackets()
-                            .Then(rex =>
-                            {
-                                Logger<ProductionLoggerConfig>.LogInformation("Successfully initialized HttpPcapDriver");
-                            })
-                            .Catch(ex => Logger<ProductionLoggerConfig>.LogCritical("Failed to initialize driver.\n\tStack message - " + ex.Message + "; at " + ex.TargetSite.Name));
+                        if (res.Result == DriverResult.FAIL_RESULT)
+                        {
+                            Logger.Critical("Failed to initialize " + c.GetType().Name);
+                            return null;
+                        }
+                        return c.BeginReceivePackets()
+                                    .Then(res =>
+                                    {
+                                        if (res.Result == DriverResult.FAIL_RESULT)
+                                        {
+                                            Logger.Critical("Failed to initialize " + c.GetType().Name);
+                                            return;
+                                        }
+                                        Logger<ProductionLoggerConfig>.LogInformation("Successfully initialized " + c.GetType().Name);
+                                    });
                     })
                     .Catch(ex => Logger<ProductionLoggerConfig>.LogCritical("Failed to initialize driver.\n\tStack message - " + ex.Message + "; at " + ex.TargetSite.Name));
 

@@ -37,7 +37,7 @@ namespace VRCP.Core.Driver
 
     public class BaseDriver<T> : IDriver where T : BaseDriver<T>, IDriver
     {
-        public static T Create()
+        public static T Create() 
         {
             return (T)Activator.CreateInstance<T>();
         }

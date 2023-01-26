@@ -28,6 +28,7 @@ SOFTWARE.
 
 namespace VRCP.Core.Driver
 {
+    using Libpcap;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -36,8 +37,16 @@ namespace VRCP.Core.Driver
 
     using VRCP.Network;
 
-    public abstract class BaseNpcapDriver : BaseDriver<BaseNpcapDriver>
+    public abstract class BaseNpcapDriver : BaseDriver<PacketNpcapDriver>, ICapDriver
     {
+        public abstract bool IsReceivingPackets { get; }
+
+        public abstract event PacketCallback OnPacketCaptured;
+
+
         public abstract IPromise<DriverResult> Connect(NetworkAdapterId id);
+        public abstract IPromise<DriverResult> BeginReceivePackets();
+
+        public abstract IPromise<DriverResult> EndReceivePackets();
     }
 }

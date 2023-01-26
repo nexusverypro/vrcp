@@ -76,8 +76,8 @@ namespace VRCP.Network
     {
         internal VRCP_IPStatistics(IPInterfaceStatistics statistics) => _stats = statistics;
 
-        public double SentInMegabytes => _stats.BytesSent / 0.000001;
-        public double ReceivedInMegabytes => _stats.BytesReceived / 0.000001;
+        public double SentInMegabytes => (double)(_stats.BytesSent / 1000000000);
+        public double ReceivedInMegabytes => (double)(_stats.BytesReceived / 1000000000);
 
         public int IncomingPacketsDropped => (int)_stats.IncomingPacketsDiscarded;
         public int OutgoingPacketsDropped => (int)_stats.OutgoingPacketsDiscarded;

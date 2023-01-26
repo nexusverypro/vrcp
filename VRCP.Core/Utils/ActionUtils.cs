@@ -33,7 +33,6 @@ namespace VRCP.Core.Utils
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using Tokens.Logging;
     using VRCP.Log;
 
     public static class ActionUtils
@@ -46,7 +45,7 @@ namespace VRCP.Core.Utils
             }
             catch (Exception ex)
             {
-                Logger<ProductionLoggerConfig>.LogCritical("Failed to SafeInvoke action: " + ex.Message);
+                Logger.Critical("Failed to SafeInvoke action: " + ex.Message);
             }
         }
 
@@ -58,7 +57,7 @@ namespace VRCP.Core.Utils
             }
             catch (Exception ex)
             {
-                Logger<ProductionLoggerConfig>.LogCritical("Failed to SafeInvoke action: " + ex.Message);
+                Logger.Critical("Failed to SafeInvoke action: " + ex.Message);
             }
         }
 
@@ -70,7 +69,7 @@ namespace VRCP.Core.Utils
             }
             catch (Exception ex)
             {
-                Logger<ProductionLoggerConfig>.LogCritical("Failed to SafeInvoke action: " + ex.Message);
+                Logger.Critical("Failed to SafeInvoke action: " + ex.Message);
             }
         }
 
@@ -82,7 +81,7 @@ namespace VRCP.Core.Utils
             }
             catch (Exception ex)
             {
-                Logger<ProductionLoggerConfig>.LogCritical("Failed to SafeInvoke action: " + ex.Message);
+                Logger.Critical("Failed to SafeInvoke action: " + ex.Message);
             }
         }
 
@@ -94,7 +93,7 @@ namespace VRCP.Core.Utils
             }
             catch (Exception ex)
             {
-                Logger<ProductionLoggerConfig>.LogCritical("Failed to SafeInvoke action: " + ex.Message);
+                Logger.Critical("Failed to SafeInvoke action: " + ex.Message);
             }
         }
     }
