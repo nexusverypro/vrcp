@@ -41,8 +41,9 @@ namespace VRCP.Core
         {
             Logger<ProductionLoggerConfig>.LogError($"Error at 0x{error.ToString("x")}! {ErrorHelper.DEFAULT}");
         }
-        public static readonly int CAPACITY_CHANGE  = 917836812;
-        public static readonly int PCAP_ERROR       = 816231278;
+        public static readonly int CAPACITY_CHANGE      = 917836812;
+        public static readonly int PCAP_ERROR           = 816231278;
+        public static readonly int PCAP_CAPTURE_ERROR   = 148920091;
 
         public static readonly string DEFAULT       = "Is something configured incorrectly?";
     }

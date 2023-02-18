@@ -81,7 +81,15 @@ namespace VRCP.Log
                         Console.ForegroundColor = logTypeConfig.FriendlyColor;
                         Console.Write(logTypeConfig.FriendlyName);
                         Console.ForegroundColor = prevColor;
-                        Console.Write($"[{DateTime.Now.ToString("d")}|{DateTime.Now.ToString("t")}] ");
+                        Console.Write($"[");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write($"{DateTime.Now.ToString("d")}");
+                        Console.ForegroundColor = prevColor;
+                        Console.Write($"|");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write($"{DateTime.Now.ToString("t")}");
+                        Console.ForegroundColor = prevColor;
+                        Console.Write($"] ");
                         Console.Write(finalMessage);
                         Console.Write("\n");
                         item.promise.Resolve();

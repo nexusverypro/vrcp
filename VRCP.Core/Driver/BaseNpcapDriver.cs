@@ -46,7 +46,6 @@ namespace VRCP.Core.Driver
 
         public abstract IPromise<DriverResult> Connect(NetworkAdapterId id);
         public abstract IPromise<DriverResult> BeginReceivePackets();
-
         public abstract IPromise<DriverResult> EndReceivePackets();
     }
 }

@@ -49,6 +49,8 @@ namespace VRCP.Core.Driver
     [DriverOptions(DriverOptionsFlags.SINGLETON | DriverOptionsFlags.CACHE_ALLOWED)]
     public class PacketPcapDriver : BasePcapDriver
     {
+        public const string HOST = "api.vrchat.cloud";
+
         public override bool IsReceivingPackets => _isReceivingPackets;
         /// <summary>
         /// Invokes when a packet has been captured my WinPcap.
@@ -147,7 +149,7 @@ namespace VRCP.Core.Driver
                 var c = _currentDevice = device;
                 c.Open(_deviceMode = DeviceModes.MaxResponsiveness, _readTimeout = 1000);
                 c.OnPacketArrival += _onPacketArrival = Internal_OnPacketArrival;
-                c.Filter = _filter = "host api.vrchat.cloud and tcp";
+                c.Filter = _filter = $"host {HOST} and tcp";
                 c.StartCapture();
 
                 p.Resolve(DriverResult.CreateFrom(DriverResult.OK_RESULT));
@@ -220,14 +222,14 @@ namespace VRCP.Core.Driver
 
                     // this could only show up if we are using HTTP or from a CONNECT packet
                     // rolling codes would only work with HTTPS
-                    bool fromVRChatServers = decodedResponse.Contains("api.vrchat.cloud") || _sessionExtractor.IsRollingCode(rawResponse);
+                    bool fromServers = decodedResponse.Contains(HOST) || _sessionExtractor.IsRollingCode(rawResponse);
 
                     // store another code
-                    if (!fromVRChatServers && !_sessionExtractor.IsRollingCode(rawResponse))
+                    if (!fromServers && !_sessionExtractor.IsRollingCode(rawResponse))
                         _sessionExtractor.StoreConnectByte(rawResponse[0]);
 
                     // rolling codes checker
-                    if (fromVRChatServers)
+                    if (fromServers)
                     {
                         var bytes = rawResponse.ToList().ToHexCodes();
                         _sessionExtractor.StoreConnectByte(rawResponse[0]);
@@ -244,7 +246,8 @@ namespace VRCP.Core.Driver
             }
             catch (Exception ex)
             {
-                Logger<ProductionLoggerConfig>.LogCritical("Error on Packet arrival: " + ex.ToString());
+                ErrorHelper.ReportError(ErrorHelper.PCAP_CAPTURE_ERROR);
+                Logger.Critical("Error on Packet arrival: " + ex.ToString());
             }
         }
         private void Internal_GetDeviceId(Promise<string> p)

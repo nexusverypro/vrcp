@@ -44,7 +44,7 @@ namespace VRCP.Application
                 _InstanceLock.Lock(0, 0);
                 Logger.Trace("Aquired lock");
 
-                // todo investigate why we need a reference to file stream. Without this GC releases the lock!
+                // TODO: investigate why we need a reference to file stream. Without this GC releases the lock!
                 System.Timers.Timer t = new System.Timers.Timer()
                 {
                     Interval = 50,
@@ -57,9 +57,11 @@ namespace VRCP.Application
                         _InstanceLock.Lock(0, 0);
                         p.Resolve();
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) // errors after resolve for some reason
                     {
-                        p.Reject(ex);
+                        // if we already resolved this no need to reject it
+                        if (p.CurState != PromiseState.Resolved)
+                            p.Reject(ex);
                     }
                 };
                 t.Start();

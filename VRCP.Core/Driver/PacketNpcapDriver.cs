@@ -112,6 +112,7 @@ namespace VRCP.Core.Driver
             {
                 var cd = _currentDevice = device;
                 var cpd = _currentOpenedDevice = Pcap.OpenDevice(cd);
+                cpd.PromiscuousMode = true;
                 var cpdr = cpd.Activate();
                 cpd.Filter = "tcp";
                 if (cpdr == PcapActivateResult.Success) cpd.Dispatch(9000, Internal_OnPacketReceived);
@@ -145,6 +146,7 @@ namespace VRCP.Core.Driver
             }
             catch (Exception ex)
             {
+                ErrorHelper.ReportError(ErrorHelper.PCAP_CAPTURE_ERROR);
                 Logger.Critical("Error on Packet arrival: " + ex.ToString());
             }
         }
